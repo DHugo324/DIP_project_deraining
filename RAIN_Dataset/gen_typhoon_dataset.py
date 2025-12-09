@@ -41,15 +41,14 @@ def add_dynamic_typhoon_effect(img, params):
     img = img.astype(np.float32) / 255.0
     row, col, ch = img.shape
 
-    # --- 1. 調整亮度 (Darkness) ---
+    # 1. 調整亮度 (Darkness)
     img = np.power(img, params['gamma'])
 
-    # --- 2. 加入雨條 (Rain Streaks) ---
+    # 準備雨層 (Rain Layer) - 跟原本一樣
     noise = np.random.uniform(0, 1, (row, col))
     drops = np.zeros_like(noise)
     drops[noise > params['rain_density']] = 1
 
-    # 建立動態模糊核 (Motion Blur Kernel)
     angle = params['angle']
     length = params['length']
     rotation_matrix = cv2.getRotationMatrix2D((length / 2, length / 2), angle, 1)
@@ -57,31 +56,35 @@ def add_dynamic_typhoon_effect(img, params):
     motion_blur_kernel = cv2.warpAffine(motion_blur_kernel, rotation_matrix, (length, length))
     motion_blur_kernel = motion_blur_kernel / length
 
-    # 模糊化產生雨條
     rain_layer = cv2.filter2D(drops, -1, motion_blur_kernel)
-    
-    # 隨機調整雨條亮度 (有些雨條比較亮，有些比較暗)
     rain_intensity = random.uniform(2.5, 4.5) 
-    cv2.GaussianBlur(rain_layer, (3, 3), 0, dst=rain_layer) # 稍微模糊一點比較自然
+    cv2.GaussianBlur(rain_layer, (3, 3), 0, dst=rain_layer)
     rain_layer = rain_layer * rain_intensity
-
-    # --- 3. 加入霧氣 (Haze) ---
-    A = 1.0  # 大氣光 (白色)
-    t = params['transmission']
-    
-    # Haze Model: I = J*t + A*(1-t)
-    hazed_img = img * t + A * (1 - t)
-    
-    # --- 4. 合成 (霧圖 + 雨條) ---
-    # 將單通道雨條轉為三通道
     rain_layer_3ch = np.dstack((rain_layer, rain_layer, rain_layer))
-    
-    # 疊加
-    final_img = hazed_img + rain_layer_3ch
 
-    # 確保數值範圍
-    final_img = np.clip(final_img, 0, 1)
+    # 準備霧參數
+    A = 1.0
+    t = params['transmission']
+
+    # ================= 隨機決定合成順序 =================
     
+    # 50% 機率：模式 A 雨在霧上面 (銳利雨)
+    if random.random() > 0.5:
+        # 先加霧
+        hazed_img = img * t + A * (1 - t)
+        # 再加雨 (雨不受 t 影響)
+        final_img = hazed_img + rain_layer_3ch
+        
+    # 50% 機率：模式 B 雨在霧裡面 (模糊雨)
+    else:
+        # 先加雨
+        rained_scene = img + rain_layer_3ch
+        # 再加霧 (雨會被 t 衰減，也會被 A 覆蓋)
+        final_img = rained_scene * t + A * (1 - t)
+        
+    # ==================================================
+
+    final_img = np.clip(final_img, 0, 1)
     return (final_img * 255).astype(np.uint8)
 
 def process_dataset(source_folder, target_folder, seed=42):
@@ -133,7 +136,7 @@ def process_dataset(source_folder, target_folder, seed=42):
 # ==========================================
 if __name__ == "__main__":
     # 修改這裡: 你的 norain 資料夾路徑
-    input_dir = r"RAIN_Dataset/norain" 
+    input_dir = r"RAIN_Dataset/norain"
     
     # 修改這裡: 你想輸出的颱風圖片資料夾
     output_dir = r"RAIN_Dataset/typhoon"
