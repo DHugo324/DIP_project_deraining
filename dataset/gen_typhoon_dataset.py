@@ -136,9 +136,9 @@ def process_dataset(source_folder, target_folder, seed=42):
 # ==========================================
 if __name__ == "__main__":
     # 修改這裡: 你的 norain 資料夾路徑
-    input_dir = r"RAIN_Dataset/norain"
+    input_dir = r"dataset/test/norain"
     
     # 修改這裡: 你想輸出的颱風圖片資料夾
-    output_dir = r"RAIN_Dataset/typhoon"
+    output_dir = r"dataset/test/typhoon"
     
     process_dataset(input_dir, output_dir)
