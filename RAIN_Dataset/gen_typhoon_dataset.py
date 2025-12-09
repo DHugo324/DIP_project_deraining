@@ -118,8 +118,8 @@ def process_dataset(source_folder, target_folder, seed=42):
         typhoon_img = add_dynamic_typhoon_effect(img, params)
         
         # 存檔
-        filename = f"typhoon_{i:03d}.png"
-        output_path = os.path.join(target_folder, filename)
+        output_filename = f"typhoon_{i:03d}.png"
+        output_path = os.path.join(target_folder, output_filename)
         cv2.imwrite(output_path, typhoon_img)
 
         # 顯示進度
