@@ -2,7 +2,14 @@ import cv2
 import numpy as np
 import os
 import random
-from pathlib import Path
+
+def set_global_seed(seed_value=42):
+    """
+    固定所有隨機套件的種子，確保實驗可重現
+    """
+    random.seed(seed_value)
+    np.random.seed(seed_value)
+    print(f"🔒 Random seed set to: {seed_value}")
 
 def get_random_typhoon_params():
     """
@@ -77,10 +84,12 @@ def add_dynamic_typhoon_effect(img, params):
     
     return (final_img * 255).astype(np.uint8)
 
-def process_dataset(source_folder, target_folder):
+def process_dataset(source_folder, target_folder, seed=42):
     """
     批次處理整個資料夾
     """
+    set_global_seed(seed)
+
     # 建立輸出資料夾 (如果不存在)
     if not os.path.exists(target_folder):
         os.makedirs(target_folder)
@@ -89,7 +98,8 @@ def process_dataset(source_folder, target_folder):
     # 取得所有圖片檔案
     valid_extensions = {'.jpg', '.jpeg', '.png', '.bmp'}
     files = [f for f in os.listdir(source_folder) if os.path.splitext(f)[1].lower() in valid_extensions]
-    
+    files.sort()
+
     total = len(files)
     print(f"Found {total} images. Starting processing...")
 
@@ -126,6 +136,6 @@ if __name__ == "__main__":
     input_dir = r"RAIN_Dataset/norain" 
     
     # 修改這裡: 你想輸出的颱風圖片資料夾
-    output_dir = r"RAIN_Dataset/typhoon_train"
+    output_dir = r"RAIN_Dataset/typhoon"
     
     process_dataset(input_dir, output_dir)
