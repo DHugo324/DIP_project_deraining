@@ -96,8 +96,8 @@ def process_dataset(source_folder, target_folder, seed=42):
         print(f"Created output directory: {target_folder}")
 
     # 取得所有圖片檔案
-    valid_extensions = {'.jpg', '.jpeg', '.png', '.bmp'}
-    files = [f for f in os.listdir(source_folder) if os.path.splitext(f)[1].lower() in valid_extensions]
+    valid_extensions = ('.jpg', '.jpeg', '.png', '.bmp')
+    files = [f for f in os.listdir(source_folder) if f.lower().endswith(valid_extensions)]
     files.sort()
 
     total = len(files)
