@@ -15,8 +15,8 @@ EPOCHS = 20          # 最少大約跑 10-20 epoch 就會有效果了
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # 你的資料路徑 (請修改這裡!)
-TYPHOON_DIR = "RAIN_Dataset/typhoon"  # 你生成的颱風圖
-CLEAN_DIR = "RAIN_Dataset/norain"       # 原始的乾淨圖
+TYPHOON_DIR = "dataset/train/typhoon"  # 你生成的颱風圖
+CLEAN_DIR = "dataset/train/norain"     # 原始的乾淨圖
 # ===========================================
 
 def train():
