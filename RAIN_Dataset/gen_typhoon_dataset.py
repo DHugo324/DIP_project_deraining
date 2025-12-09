@@ -52,9 +52,9 @@ def add_dynamic_typhoon_effect(img, params):
     # 建立動態模糊核 (Motion Blur Kernel)
     angle = params['angle']
     length = params['length']
-    M = cv2.getRotationMatrix2D((length / 2, length / 2), angle, 1)
+    rotation_matrix = cv2.getRotationMatrix2D((length / 2, length / 2), angle, 1)
     motion_blur_kernel = np.diag(np.ones(length))
-    motion_blur_kernel = cv2.warpAffine(motion_blur_kernel, M, (length, length))
+    motion_blur_kernel = cv2.warpAffine(motion_blur_kernel, rotation_matrix, (length, length))
     motion_blur_kernel = motion_blur_kernel / length
 
     # 模糊化產生雨條
