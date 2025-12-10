@@ -9,7 +9,7 @@ from model import AttentionUNet
 
 # ================= 設定 =================
 MODEL_PATH = "checkpoints/Attention_UNet_model.pth"        # 訓練好的權重檔
-INPUT_FOLDER = "RAIN_Dataset/test/typhoon" # 測試圖片來源
+INPUT_FOLDER = "dataset/test/typhoon" # 測試圖片來源
 OUTPUT_FOLDER = "results/Attention_UNet"  # 結果輸出位置
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # =======================================
