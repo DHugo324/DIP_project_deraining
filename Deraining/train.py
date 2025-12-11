@@ -21,7 +21,7 @@ import numpy as np
 
 import utils
 from data_RGB import get_training_data, get_validation_data
-from MPRNet import MPRNet
+from MPRNet import MPRNet, MPRNet_improve
 import losses
 from warmup_scheduler import GradualWarmupScheduler
 from tqdm import tqdm
@@ -32,6 +32,7 @@ parser = argparse.ArgumentParser(description='Image Deraining using MPRNet')
 
 parser.add_argument('--train_dataset', default='origin', type=str, help='Dataset of training images')
 parser.add_argument('--val_dataset', default='Rain100L', type=str, help='Dataset of validation images')
+parser.add_argument('--mode', default='origin', type=str, help='use origin MPR or improved MPR')
 
 args = parser.parse_args()
 
@@ -55,7 +56,11 @@ train_dir = os.path.join(opt.TRAINING.TRAIN_DIR, args.train_dataset)
 val_dir   = os.path.join(opt.TRAINING.VAL_DIR, args.val_dataset)
 
 ######### Model ###########
-model_restoration = MPRNet()
+if args.mode == "improve":
+    model_restoration = MPRNet_improve()
+else:
+    model_restoration = MPRNet()
+
 model_restoration.cuda()
 
 device_ids = [i for i in range(torch.cuda.device_count())]

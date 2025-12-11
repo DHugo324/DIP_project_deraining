@@ -16,7 +16,7 @@ import torch.nn.functional as F
 import utils
 
 from data_RGB import get_test_data
-from MPRNet import MPRNet
+from MPRNet import MPRNet, MPRNet_improve
 from skimage import img_as_ubyte
 from pdb import set_trace as stx
 
@@ -26,13 +26,17 @@ parser.add_argument('--input_dir', default='./Datasets/test/', type=str, help='D
 parser.add_argument('--result_dir', default='./results/', type=str, help='Directory for results')
 parser.add_argument('--weights', default='./pretrained_models/model_deraining.pth', type=str, help='Path to weights')
 parser.add_argument('--gpus', default='0', type=str, help='CUDA_VISIBLE_DEVICES')
+parser.add_argument('--mode', default='origin', type=str, help='use origin MPR or improved MPR')
 
 args = parser.parse_args()
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = args.gpus
 
-model_restoration = MPRNet()
+if args.mode == "improve":
+    model_restoration = MPRNet_improve()
+else:
+    model_restoration = MPRNet()
 
 utils.load_checkpoint(model_restoration,args.weights)
 print("===>Testing using weights: ",args.weights)
