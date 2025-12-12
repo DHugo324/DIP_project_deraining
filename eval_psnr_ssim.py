@@ -1,6 +1,7 @@
 import os
 import glob
 import numpy as np
+import matplotlib.pyplot as plt
 from skimage.io import imread
 from skimage.metrics import peak_signal_noise_ratio, structural_similarity
 
@@ -31,7 +32,7 @@ def evaluate_psnr_ssim(gt_dir, res_dir, suffix='.png'):
 
         data_range = 1.0
         psnr = peak_signal_noise_ratio(gt, res, data_range=data_range)
-        
+
         # skimage >= 0.19 用 channel_axis，舊版用 multichannel=True
         try:
             ssim = structural_similarity(gt, res, data_range=data_range, channel_axis=-1)
@@ -48,13 +49,34 @@ def evaluate_psnr_ssim(gt_dir, res_dir, suffix='.png'):
     print(f'Mean PSNR: {np.mean(psnrs):.4f} dB')
     print(f'Mean SSIM: {np.mean(ssims):.4f}')
     print('----------------------------------------')
+    return psnrs, ssims
 
 if __name__ == '__main__':
     # path setting
     gt_dir  = 'Rtest/target'
+    defect_dir = 'Rtest/input'
     res_dir = 'Rresult'
 
-    evaluate_psnr_ssim(gt_dir, res_dir)
+    psnr_before, ssim_before = evaluate_psnr_ssim(gt_dir, defect_dir)
+    psnr_after, ssim_after = evaluate_psnr_ssim(gt_dir, res_dir)
 
-# after set up the dir.
-# $python .\eval_psnr_ssim.py
+    # -------- 畫 PSNR / SSIM 分布 --------
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+    axes[0].hist(psnr_before, bins=20, color='blue', alpha=0.6, label="before")
+    axes[0].hist(psnr_after, bins=20, color='red', alpha=0.6, label="after")
+    axes[0].set_title('PSNR Distribution')
+    axes[0].set_xlabel('PSNR (dB)')
+    axes[0].set_ylabel('Count')
+    axes[0].legend()
+
+    axes[1].hist(ssim_before, bins=20, color='green', alpha=0.6, label="before")
+    axes[1].hist(ssim_after, bins=20, color='red', alpha=0.6, label="after")
+    axes[1].set_title('SSIM Distribution')
+    axes[1].set_xlabel('SSIM')
+    axes[1].set_ylabel('Count')
+    axes[1].legend()
+
+    plt.tight_layout()
+    plt.show()
+    # -------------------------------------------
