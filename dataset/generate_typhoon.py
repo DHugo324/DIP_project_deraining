@@ -59,7 +59,7 @@ def add_dynamic_typhoon_effect(img, params):
     rain_layer = cv2.filter2D(drops, -1, motion_blur_kernel)
     
     # Gaussian blur and intensity scaling
-    rain_intensity = random.uniform(2.5, 4.5) 
+    rain_intensity = random.uniform(2.5, 4.5)
     cv2.GaussianBlur(rain_layer, (3, 3), 0, dst=rain_layer)
     rain_layer = rain_layer * rain_intensity
     rain_layer_3ch = np.dstack((rain_layer, rain_layer, rain_layer))
@@ -107,7 +107,9 @@ def process_dataset(source_folder, target_folder, mode='random_range', start_idx
     for i, filename in enumerate(target_files):
         img_path = os.path.join(source_folder, filename)
         img = cv2.imread(img_path)
-        if img is None: continue
+        if img is None:
+            print(f"Warning: Failed to load image '{img_path}'. Skipping.")
+            continue
 
         if mode == 'random_range':
             # 1-to-1: Unique random parameters per image
