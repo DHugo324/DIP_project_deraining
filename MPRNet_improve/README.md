@@ -15,24 +15,7 @@
 [![video](https://img.shields.io/badge/Video-Presentation-F9D371)](https://www.youtube.com/watch?v=0SMTPiLw5Vw)
 [![slides](https://img.shields.io/badge/Presentation-Slides-B762C1)](https://drive.google.com/file/d/1-L43wj-VTppkrR9AL6cPBJI2RJi3Hc_z/view?usp=sharing)
 
-## MPRNet Installation
-The model is built in PyTorch 1.1.0 and tested on Ubuntu 16.04 environment (Python3.7, CUDA9.0, cuDNN7.5).
-
-For installing, follow these instructions
-```
-conda create -n pytorch1 python=3.7
-conda activate pytorch1
-conda install pytorch=1.1 torchvision=0.3 cudatoolkit=9.0 -c pytorch
-pip install matplotlib scikit-image opencv-python yacs joblib natsort h5py tqdm
-```
-
-Install warmup scheduler
-
-```
-cd pytorch-gradual-warmup-lr; python setup.py install; cd ..
-```
-
-## Citation
+### Citation
 If you find this work helpful, please cite the original MPRNet paper:
 
     @inproceedings{Zamir2021MPRNet,
